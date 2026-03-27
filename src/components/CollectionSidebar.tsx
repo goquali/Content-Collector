@@ -19,9 +19,10 @@ import type { CollectionWithCount } from "@/types";
 interface Props {
   collections: CollectionWithCount[];
   activeId?: string;
+  mobile?: boolean;
 }
 
-export default function CollectionSidebar({ collections, activeId }: Props) {
+export default function CollectionSidebar({ collections, activeId, mobile }: Props) {
   const router = useRouter();
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState("");
@@ -64,7 +65,10 @@ export default function CollectionSidebar({ collections, activeId }: Props) {
   };
 
   return (
-    <aside className="hidden w-64 shrink-0 border-r bg-white p-4 md:block">
+    <aside className={cn(
+      "w-64 shrink-0 border-r bg-white p-4",
+      mobile ? "block w-full border-r-0" : "hidden md:block"
+    )}>
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
           Collections
