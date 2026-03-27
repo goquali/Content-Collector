@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Content {
+  id          String       @id @default(cuid())
+  type        String       // LINK or IMAGE
+  url         String?
+  title       String
+  description String?
+  previewUrl  String?
+  imagePath   String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  collectionId String?
+  collection  Collection?  @relation(fields: [collectionId], references: [id], onDelete: SetNull)
+  tags        ContentTag[]
+}
+
+model Collection {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  shareSlug   String?   @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  contents    Content[]
+}
+
+model Tag {
+  id        String       @id @default(cuid())
+  name      String       @unique
+  createdAt DateTime     @default(now())
+  contents  ContentTag[]
+}
+
+model ContentTag {
+  contentId String
+  tagId     String
+  content   Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([contentId, tagId])
+}
